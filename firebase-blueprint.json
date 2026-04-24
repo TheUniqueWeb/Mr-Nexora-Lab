@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with role-based access",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Tool": {
+      "title": "Tool",
+      "description": "External tool listing",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "link": { "type": "string" },
+        "category": { "type": "string" },
+        "icon": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "link"]
+    },
+    "Script": {
+      "title": "Script",
+      "description": "Code script listing",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "code": { "type": "string" },
+        "language": { "type": "string" },
+        "image": { "type": "string" },
+        "downloadUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "code", "language"]
+    },
+    "App": {
+      "title": "App",
+      "description": "Mobile or Web app listing",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "image": { "type": "string" },
+        "version": { "type": "string" },
+        "downloadUrl": { "type": "string" },
+        "downloadsCount": { "type": "number" },
+        "rating": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "downloadUrl"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Chat message",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "image", "file"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "seen": { "type": "boolean" },
+        "fileUrl": { "type": "string" }
+      },
+      "required": ["senderId", "text", "type", "timestamp"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "Chat session between user and admin",
+      "type": "object",
+      "properties": {
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "lastMessage": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "typing": { "type": "object" }
+      },
+      "required": ["participants", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": { "schema": "User", "description": "User profiles" },
+    "tools/{toolId}": { "schema": "Tool", "description": "Tools listings" },
+    "scripts/{scriptId}": { "schema": "Script", "description": "Script listings" },
+    "apps/{appId}": { "schema": "App", "description": "App listings" },
+    "chats/{chatId}": { "schema": "Chat", "description": "Chat sessions" },
+    "chats/{chatId}/messages/{messageId}": { "schema": "Message", "description": "Messages in a chat" },
+    "admins/{userId}": { "schema": { "type": "object", "properties": { "email": { "type": "string" } } }, "description": "Admin whitelist" }
+  }
+}
