@@ -7,14 +7,14 @@ import { cn } from '../lib/utils';
 
 export default function About() {
   const [profile, setProfile] = useState({
-    name: 'Mr Nexora',
+    name: 'Mahamudur Rahman',
     role: 'Founder & CEO',
-    email: 'contact@mrnexoralab.app',
-    age: '24',
-    dob: 'May 15, 2002',
+    email: 'mahamudurrahman778@gmail.com',
+    age: '13',
+    dob: '3 February 2013',
     bio: 'Visionary developer and security researcher with a passion for building scalable, high-performance digital tools. My mission is to bridge the gap between complex technology and end-user accessibility through clean design and robust engineering.',
-    location: 'Silicon Valley of South Asia',
-    experience: '8+ Years',
+    location: 'Dhaka,Bangladesh ',
+    experience: '2 Years',
     projects: '250+',
     skills: ['Full Stack Dev', 'Cloud Architecture', 'Cyber Security', 'UI/UX Design', 'System Design']
   });
