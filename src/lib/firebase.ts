@@ -7,15 +7,15 @@ import { getStorage } from 'firebase/storage';
 import appletConfig from '../../firebase-applet-config.json';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDm1V2v0FjSoyy34oENhyrldENjL5XL278",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "mr-nexora.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "mr-nexora",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "mr-nexora.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "425660257877",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:425660257877:web:693856b7d8446ccb9f26dc",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || (appletConfig.apiKey !== 'dummy-api-key' ? appletConfig.apiKey : ""),
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || (appletConfig.authDomain !== 'dummy.firebaseapp.com' ? appletConfig.authDomain : ""),
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || (appletConfig.projectId !== 'dummy-project' ? appletConfig.projectId : ""),
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || (appletConfig.storageBucket !== 'dummy.appspot.com' ? appletConfig.storageBucket : ""),
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || (appletConfig.messagingSenderId !== '000000000000' ? appletConfig.messagingSenderId : ""),
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || (appletConfig.appId !== '1:000000000000:web:0000000000000000000000' ? appletConfig.appId : ""),
 };
 
-const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== 'dummy-api-key';
+const isConfigValid = firebaseConfig.apiKey && firebaseConfig.apiKey.length > 0;
 
 let app = null;
 try {
@@ -28,7 +28,7 @@ export const auth = app ? getAuth(app) : null;
 export const googleProvider = new GoogleAuthProvider();
 export { signInWithPopup };
 
-export const db = app ? getFirestore(app) : null;
+export const db = app ? getFirestore(app, appletConfig.firestoreDatabaseId || '(default)') : null;
 export const storage = app ? getStorage(app) : null;
 
 
