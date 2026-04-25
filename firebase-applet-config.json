@@ -1,9 +1,9 @@
 {
-  "apiKey": "dummy-api-key",
-  "authDomain": "dummy.firebaseapp.com",
-  "projectId": "dummy-project",
-  "storageBucket": "dummy.appspot.com",
-  "messagingSenderId": "000000000000",
-  "appId": "1:000000000000:web:0000000000000000000000",
+  "apiKey": "AIzaSyDm1V2v0FjSoyy34oENhyrldENjL5XL278",
+  "authDomain": "mr-nexora.firebaseapp.com",
+  "projectId": "mr-nexora",
+  "storageBucket": "mr-nexora.firebasestorage.app",
+  "messagingSenderId": "425660257877",
+  "appId": "1:425660257877:web:693856b7d8446ccb9f26dc",
   "firestoreDatabaseId": "(default)"
 }
