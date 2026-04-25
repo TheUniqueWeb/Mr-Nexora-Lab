@@ -1,9 +1,10 @@
 {
+  "projectId": "mr-nexora",
+  "appId": "1:425660257877:web:1d77ea06668088c59f26dc",
   "apiKey": "AIzaSyDm1V2v0FjSoyy34oENhyrldENjL5XL278",
   "authDomain": "mr-nexora.firebaseapp.com",
-  "projectId": "mr-nexora",
+  "firestoreDatabaseId": "ai-studio-45adff60-c625-4d46-87bf-6aae92a774aa",
   "storageBucket": "mr-nexora.firebasestorage.app",
   "messagingSenderId": "425660257877",
-  "appId": "1:425660257877:web:693856b7d8446ccb9f26dc",
-  "firestoreDatabaseId": "(default)"
+  "measurementId": ""
 }

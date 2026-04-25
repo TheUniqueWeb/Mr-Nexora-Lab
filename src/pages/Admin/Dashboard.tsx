@@ -8,7 +8,8 @@ import {
 import toast from 'react-hot-toast';
 import { 
   collection, onSnapshot, addDoc, deleteDoc, 
-  updateDoc, doc, query, getDocs, orderBy, setDoc, where 
+  updateDoc, doc, query, getDocs, orderBy, setDoc, where,
+  getDoc
 } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { cn } from '../../lib/utils';
@@ -103,9 +104,14 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!db) return;
     const fetchOwner = async () => {
-      const docSnap = await getDocs(query(collection(db, 'settings'), where('id', '==', 'owner')));
-      if (!docSnap.empty) {
-        setOwnerInfo(docSnap.docs[0].data() as any);
+      try {
+        const docRef = doc(db, 'settings', 'owner');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setOwnerInfo(docSnap.data() as any);
+        }
+      } catch (error) {
+        console.error("Error fetching owner info:", error);
       }
     };
     fetchOwner();

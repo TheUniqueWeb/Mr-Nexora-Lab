@@ -32,10 +32,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const userData = userDoc.data();
           setIsAdmin(
             userData?.role === 'admin' || 
-            u.email === 'mahamudurrahman778@gmail.com'
+            u.email?.toLowerCase() === 'mahamudurrahman778@gmail.com'
           );
         } catch (e) {
-          setIsAdmin(u.email === 'mahamudurrahman778@gmail.com');
+          setIsAdmin(u.email?.toLowerCase() === 'mahamudurrahman778@gmail.com');
         }
       } else {
         setIsAdmin(false);

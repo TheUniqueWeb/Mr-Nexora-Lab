@@ -43,7 +43,7 @@ export default function Auth() {
           uid: userCred.user.uid,
           email: userCred.user.email,
           displayName: fullName,
-          role: userCred.user.email === 'mahamudurrahman778@gmail.com' ? 'admin' : 'user',
+          role: userCred.user.email?.toLowerCase() === 'mahamudurrahman778@gmail.com' ? 'admin' : 'user',
           createdAt: new Date().toISOString()
         });
         
@@ -80,7 +80,7 @@ export default function Auth() {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
-          role: user.email === 'mahamudurrahman778@gmail.com' ? 'admin' : 'user',
+          role: user.email?.toLowerCase() === 'mahamudurrahman778@gmail.com' ? 'admin' : 'user',
           createdAt: new Date().toISOString()
         });
       }
