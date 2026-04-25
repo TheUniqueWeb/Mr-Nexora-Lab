@@ -12,7 +12,7 @@ export default function About() {
     email: 'mahamudurrahman778@gmail.com',
     age: '13',
     dob: '3 February 2013',
-    bio: 'Visionary developer and security researcher with a passion for building scalable, high-performance digital tools. My mission is to bridge the gap between complex technology and end-user accessibility through clean design and robust engineering.',
+    bio: '⚡ Life is short, and so is your temper. 🔥',
     location: 'Dhaka,Bangladesh ',
     experience: '2 Years',
     projects: '250+',
