@@ -107,17 +107,17 @@ export default function Support() {
 
       <div className="flex-grow glass rounded-[32px] overflow-hidden flex flex-col min-h-0 border border-white/5">
         {/* Chat Header */}
-        <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/5">
+        <div className="p-6 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-white/5 to-brand-purple/5">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-brand-purple flex items-center justify-center neon-glow">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center neon-glow-pink">
                 {isAdmin ? <User className="text-white" /> : <ShieldCheck className="text-white" />}
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-brand-dark" />
             </div>
             <div>
               <h3 className="font-bold">{isAdmin ? 'Customer User' : 'Nexus Admin'}</h3>
-              <p className="text-xs text-green-500 font-medium tracking-wide flex items-center gap-1">
+              <p className="text-xs text-brand-cyan font-medium tracking-wide flex items-center gap-1 animate-pulse">
                 Online and ready
               </p>
             </div>
@@ -148,10 +148,10 @@ export default function Support() {
                 )}
               >
                 <div className={cn(
-                  "px-6 py-4 rounded-3xl text-sm leading-relaxed",
+                  "px-6 py-4 rounded-3xl text-sm leading-relaxed shadow-lg",
                   isMe 
-                    ? "bg-brand-purple text-white rounded-tr-none neon-glow" 
-                    : "glass text-slate-300 rounded-tl-none"
+                    ? "bg-gradient-to-br from-brand-purple via-brand-pink to-brand-purple text-white rounded-tr-none neon-glow-pink" 
+                    : "glass text-slate-200 rounded-tl-none border border-white/10"
                 )}>
                   {m.text}
                 </div>
@@ -190,7 +190,7 @@ export default function Support() {
              <button
                type="submit"
                disabled={!newMessage.trim()}
-               className="bg-brand-purple disabled:opacity-50 disabled:grayscale text-white p-4 rounded-2xl neon-glow hover:scale-105 active:scale-95 transition-all"
+               className="bg-gradient-to-r from-brand-purple to-brand-pink disabled:opacity-50 disabled:grayscale text-white p-4 rounded-2xl neon-glow-pink hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand-pink/20"
              >
                <Send className="w-6 h-6" />
              </button>

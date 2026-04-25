@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Calendar, User, Shield, Github, Twitter, Instagram, Linkedin, ExternalLink, Award, Coffee, BookOpen, Globe } from 'lucide-react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { cn } from '../lib/utils';
 
 export default function About() {

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Users, Download, Box, Code, Smartphone, 
   Plus, Trash2, Edit3, Save, X, Search,
-  TrendingUp, Activity, MessageSquare, Briefcase
+  TrendingUp, Activity, MessageSquare, Briefcase, User
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { 
@@ -32,12 +32,73 @@ export default function AdminDashboard() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [formData, setFormData] = useState<any>({
+    title: '',
+    description: '',
+    icon: 'Box',
+    tag: '',
+    version: '1.0.0',
+    type: '',
+    developer: 'Mr Nexora',
+    link: ''
+  });
   const [ownerInfo, setOwnerInfo] = useState({
     name: 'Mr Nexora',
     role: 'Founder & CEO',
     bio: '',
     email: '',
   });
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!db) return;
+    const collectionName = activeTab.toLowerCase();
+    try {
+      const dataToSave = {
+        ...formData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      if (editingItem) {
+        await updateDoc(doc(db, collectionName, editingItem.id), dataToSave);
+        toast.success(`${activeTab} item updated`);
+      } else {
+        await addDoc(collection(db, collectionName), dataToSave);
+        toast.success(`New ${activeTab} item created`);
+      }
+      
+      setShowForm(false);
+      setEditingItem(null);
+      resetForm();
+    } catch (error: any) {
+      toast.error(`Operation failed: ${error.message}`);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!db || !window.confirm('Delete this record permanently?')) return;
+    try {
+      await deleteDoc(doc(db, activeTab.toLowerCase(), id));
+      toast.success('Record deleted');
+    } catch (error: any) {
+      toast.error(`Delete failed: ${error.message}`);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      icon: 'Box',
+      tag: '',
+      version: '1.0.0',
+      type: '',
+      developer: 'Mr Nexora',
+      link: ''
+    });
+  };
 
   useEffect(() => {
     if (!db) return;
@@ -137,6 +198,14 @@ export default function AdminDashboard() {
            <p className="text-slate-500 font-medium">Welcome back, Admin. System status: Optimal.</p>
         </div>
         <div className="flex gap-4">
+           {activeTab !== 'Stats' && activeTab !== 'Settings' && activeTab !== 'Chats' && (
+             <button 
+               onClick={() => { setShowForm(true); setEditingItem(null); resetForm(); }}
+               className="bg-brand-purple text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2"
+             >
+                <Plus className="w-5 h-5" /> Add New
+             </button>
+           )}
            <div className="px-6 py-3 glass rounded-2xl flex items-center gap-3 border-green-500/20">
               <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
               <span className="text-sm font-bold text-green-500 uppercase tracking-widest">Live Sync</span>
@@ -293,87 +362,150 @@ export default function AdminDashboard() {
         </div>
       ) : (
         <div className="animate-in slide-in-from-bottom-5 duration-500">
+           {/* Section Header */}
            <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold flex items-center gap-3">
                 Manage {activeTab} 
                 <span className="text-xs font-bold text-slate-600 bg-white/5 px-2 py-1 rounded-md">{items.length}</span>
               </h2>
-              <button 
-                onClick={() => setShowForm(true)}
-                className="bg-brand-purple text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 neon-glow transition-all active:scale-95"
-              >
-                <Plus className="w-5 h-5" /> Add New {activeTab.slice(0, -1)}
-              </button>
            </div>
 
-           {/* Table/List View */}
-           <div className="glass rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
-              <table className="w-full text-left">
-                 <thead className="bg-white/5">
-                    <tr>
-                       <th className="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Name / ID</th>
-                       <th className="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Details</th>
-                       <th className="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Status</th>
-                       <th className="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Actions</th>
-                    </tr>
-                 </thead>
-                 <tbody className="divide-y divide-white/5">
-                    {items.map((item) => (
-                      <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                         <td className="px-8 py-6">
-                            <div className="font-bold text-white">{item.name}</div>
-                            <div className="text-[10px] font-mono text-slate-600">{item.id}</div>
-                         </td>
-                         <td className="px-8 py-6">
-                            <div className="text-sm text-slate-400 line-clamp-1">{item.description || item.lastMessage}</div>
-                         </td>
-                         <td className="px-8 py-6">
-                            <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase border border-emerald-500/20">Active</span>
-                         </td>
-                         <td className="px-8 py-6 text-right">
-                            <div className="flex justify-end gap-2">
-                               <button className="p-2 glass rounded-lg text-slate-400 hover:text-brand-cyan"><Edit3 className="w-4 h-4" /></button>
-                               <button 
-                                onClick={async () => {
-                                  if (window.confirm('Delete this item?')) {
-                                    await deleteDoc(doc(db!, activeTab.toLowerCase(), item.id));
-                                  }
-                                }}
-                                className="p-2 glass rounded-lg text-slate-400 hover:text-red-500"
-                               >
-                                <Trash2 className="w-4 h-4" />
-                               </button>
-                            </div>
-                         </td>
-                      </tr>
-                    ))}
-                    {items.length === 0 && (
-                      <tr>
-                        <td colSpan={4} className="px-8 py-20 text-center text-slate-500 italic">No data records found in this vector.</td>
-                      </tr>
-                    )}
-                 </tbody>
-              </table>
+           {/* Dynamic List Rendering */}
+           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {items.map((item) => (
+                <div key={item.id} className="glass-card p-6 flex flex-col justify-between group hover:border-brand-purple/50 transition-all">
+                   <div>
+                      <div className="flex justify-between items-start mb-4">
+                         <div className="w-12 h-12 rounded-xl bg-brand-purple/10 flex items-center justify-center">
+                            <Box className="w-6 h-6 text-brand-purple" />
+                         </div>
+                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button 
+                              onClick={() => { setEditingItem(item); setFormData({ ...item }); setShowForm(true); }}
+                              className="p-2 glass rounded-lg text-slate-400 hover:text-brand-cyan transition-colors"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(item.id)}
+                              className="p-2 glass rounded-lg text-slate-400 hover:text-red-500 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                         </div>
+                      </div>
+                      <h4 className="font-bold text-lg mb-1">{item.title || item.name}</h4>
+                      <p className="text-sm text-slate-500 line-clamp-2 mb-4 h-10">{item.description}</p>
+                   </div>
+                   
+                   <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-auto">
+                      <div className="flex gap-2">
+                        {item.tag && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-brand-cyan/10 text-brand-cyan">{item.tag}</span>}
+                        <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-white/5 text-slate-500">v{item.version}</span>
+                      </div>
+                      <div className="text-[10px] font-bold text-slate-600 uppercase">
+                        {new Date(item.createdAt).toLocaleDateString()}
+                      </div>
+                   </div>
+                </div>
+              ))}
+              {items.length === 0 && !loading && (
+                <div className="col-span-full py-24 text-center glass-card border-dashed">
+                   <Box className="w-12 h-12 text-slate-700 mx-auto mb-4 opacity-50" />
+                   <h3 className="text-slate-400 font-bold">Vector Empty</h3>
+                   <p className="text-slate-600 text-sm">No records found in this neural sector.</p>
+                </div>
+              )}
            </div>
         </div>
       )}
 
-      {/* Simple Add Support - To be expanded for each model */}
+      {/* Add / Edit Form Modal */}
       <AnimatePresence>
         {showForm && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowForm(false)} className="absolute inset-0 bg-black/80 backdrop-blur-md" />
-             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} className="relative glass-card p-10 w-full max-w-xl border-white/10 shadow-2xl">
-                <h3 className="text-2xl font-bold mb-8">Add New {activeTab.slice(0,-1)}</h3>
-                {/* Form fields here - simplified for brief turn */}
-                <div className="space-y-6">
-                   <input className="w-full bg-brand-dark border border-white/10 rounded-xl px-6 py-3" placeholder="Resource Name" />
-                   <textarea className="w-full bg-brand-dark border border-white/10 rounded-xl px-6 py-3 h-32" placeholder="Description" />
+             <motion.div 
+               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
+               onClick={() => setShowForm(false)} 
+               className="absolute inset-0 bg-brand-dark/90 backdrop-blur-md" 
+             />
+             <motion.div 
+               initial={{ scale: 0.9, y: 20, opacity: 0 }} 
+               animate={{ scale: 1, y: 0, opacity: 1 }} 
+               exit={{ scale: 0.9, y: 20, opacity: 0 }} 
+               className="relative glass-card p-8 md:p-10 w-full max-w-xl border-white/10 shadow-2xl overflow-y-auto max-h-[90vh]"
+             >
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-2xl font-bold">{editingItem ? 'Update' : 'Initialize'} {activeTab.slice(0,-1)}</h3>
+                  <button onClick={() => setShowForm(false)} className="p-2 glass rounded-full text-slate-500 hover:text-white transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
-                <div className="flex gap-4 mt-10">
-                   <button onClick={() => setShowForm(false)} className="flex-grow py-3 rounded-xl glass font-bold text-slate-400">Cancel</button>
-                   <button className="flex-grow py-3 rounded-xl bg-brand-purple text-white font-bold neon-glow">Create Record</button>
-                </div>
+
+                <form onSubmit={handleCreate} className="space-y-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2 space-y-2">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Asset Identity</label>
+                        <input 
+                          required
+                          placeholder="Application Name"
+                          value={formData.title}
+                          onChange={e => setFormData({ ...formData, title: e.target.value })}
+                          className="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 focus:border-brand-purple outline-none transition-all" 
+                        />
+                      </div>
+                      
+                      <div className="md:col-span-2 space-y-2">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Neural Narrative</label>
+                        <textarea 
+                          required
+                          placeholder="Describe the capabilities..."
+                          value={formData.description}
+                          onChange={e => setFormData({ ...formData, description: e.target.value })}
+                          className="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 h-28 focus:border-brand-purple outline-none transition-all resize-none" 
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Vector Tag</label>
+                        <input 
+                          placeholder="Security / Utility"
+                          value={formData.tag}
+                          onChange={e => setFormData({ ...formData, tag: e.target.value })}
+                          className="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 focus:border-brand-purple outline-none transition-all" 
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Core Version</label>
+                        <input 
+                          placeholder="1.0.0"
+                          value={formData.version}
+                          onChange={e => setFormData({ ...formData, version: e.target.value })}
+                          className="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 focus:border-brand-purple outline-none transition-all" 
+                        />
+                      </div>
+
+                      <div className="md:col-span-2 space-y-2">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Deployment Port (URL)</label>
+                        <input 
+                          placeholder="https://nexora.app/dl"
+                          value={formData.link}
+                          onChange={e => setFormData({ ...formData, link: e.target.value })}
+                          className="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 focus:border-brand-purple outline-none transition-all" 
+                        />
+                      </div>
+                   </div>
+
+                   <div className="flex gap-4 pt-6">
+                      <button type="button" onClick={() => setShowForm(false)} className="flex-grow py-4 rounded-xl glass font-bold text-slate-400 hover:text-white transition-all">
+                        Abort
+                      </button>
+                      <button type="submit" className="flex-grow py-4 rounded-xl bg-brand-purple text-white font-bold neon-glow shadow-brand-purple/20 transition-all active:scale-95">
+                        {editingItem ? 'Confirm Shift' : 'Initiate Records'}
+                      </button>
+                   </div>
+                </form>
              </motion.div>
           </div>
         )}

@@ -7,10 +7,10 @@ import { cn } from '../lib/utils';
 
 interface Tool {
   id: string;
-  name: string;
+  title: string;
   description: string;
   link: string;
-  category: string;
+  tag: string;
   icon?: string;
   isPopular?: boolean;
 }
@@ -28,10 +28,8 @@ export default function Tools() {
     if (!db) {
       // Mock data for demo if firebase not setup
       setTools([
-        { id: '1', name: 'JSON Prettifier', description: 'Advanced JSON formatting and validation tool.', link: '#', category: 'Dev', isPopular: true },
-        { id: '2', name: 'CSS Gradient Gen', description: 'Visual editor for modern CSS gradients.', link: '#', category: 'Design' },
-        { id: '3', name: 'NMAP Helper', description: 'Network scanning parameter generator.', link: '#', category: 'Security', isPopular: true },
-        { id: '4', name: 'Responsive Checker', description: 'Test websites on multiple screen sizes.', link: '#', category: 'Web' },
+        { id: '1', title: 'JSON Prettifier', description: 'Advanced JSON formatting and validation tool.', link: '#', tag: 'Dev', isPopular: true },
+        { id: '2', title: 'CSS Gradient Gen', description: 'Visual editor for modern CSS gradients.', link: '#', tag: 'Design' },
       ]);
       setLoading(false);
       return;
@@ -39,7 +37,7 @@ export default function Tools() {
 
     const q = query(collection(db, 'tools'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tool));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
       setTools(data);
       setLoading(false);
     });
@@ -48,9 +46,9 @@ export default function Tools() {
   }, []);
 
   const filteredTools = tools.filter(tool => {
-    const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = tool.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          tool.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeCategory === 'All' || tool.category === activeCategory;
+    const matchesCategory = activeCategory === 'All' || tool.tag === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -68,7 +66,7 @@ export default function Tools() {
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl md:text-6xl font-bold mb-4"
         >
-          Curated <span className="text-brand-cyan">Tools</span>
+          Curated <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-cyan to-brand-indigo">Tools</span>
         </motion.h1>
         <p className="text-slate-400">Essential utilities for the modern digital explorer</p>
       </div>
@@ -106,8 +104,29 @@ export default function Tools() {
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <AnimatePresence mode="popLayout">
-          {filteredTools.map((tool, i) => (
+        {loading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="glass-card p-6 flex flex-col h-full animate-pulse">
+              <div className="flex justify-between items-start mb-6">
+                <div className="w-12 h-12 rounded-xl bg-white/5 skeleton" />
+                <div className="w-10 h-10 rounded-lg bg-white/5 skeleton" />
+              </div>
+              <div className="flex-grow space-y-4">
+                <div className="h-6 w-3/4 bg-white/5 rounded skeleton" />
+                <div className="space-y-2">
+                  <div className="h-4 w-full bg-white/5 rounded skeleton" />
+                  <div className="h-4 w-5/6 bg-white/5 rounded skeleton" />
+                </div>
+              </div>
+              <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-6">
+                <div className="h-4 w-16 bg-white/5 rounded skeleton" />
+                <div className="h-4 w-24 bg-white/5 rounded skeleton" />
+              </div>
+            </div>
+          ))
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filteredTools.map((tool, i) => (
             <motion.div
               key={tool.id}
               layout
@@ -118,8 +137,8 @@ export default function Tools() {
               className="glass-card p-6 flex flex-col group h-full"
             >
               <div className="flex justify-between items-start mb-6">
-                <div className="w-12 h-12 rounded-xl bg-brand-cyan/10 flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-brand-cyan" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-purple to-brand-cyan flex items-center justify-center neon-glow">
+                  <Zap className="w-6 h-6 text-white" />
                 </div>
                 <button 
                   onClick={() => toggleFavorite(tool.id)}
@@ -134,9 +153,9 @@ export default function Tools() {
 
               <div className="flex-grow">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-xl font-bold text-white group-hover:text-brand-cyan transition-colors">{tool.name}</h3>
+                  <h3 className="text-xl font-bold text-white group-hover:text-brand-pink transition-colors">{tool.title}</h3>
                   {tool.isPopular && (
-                    <span className="text-[10px] uppercase font-bold tracking-tighter bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded-full">Popular</span>
+                    <span className="text-[10px] uppercase font-bold tracking-tighter bg-brand-pink/20 text-brand-pink px-2 py-0.5 rounded-full border border-brand-pink/20">Popular</span>
                   )}
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed mb-6">
@@ -145,10 +164,10 @@ export default function Tools() {
               </div>
 
               <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{tool.category}</span>
+                <span className="text-xs font-bold text-brand-cyan uppercase tracking-widest">{tool.tag}</span>
                 <a
                   href={tool.link}
-                  className="flex items-center gap-2 text-brand-purple font-bold text-sm hover:gap-3 transition-all"
+                  className="flex items-center gap-2 text-brand-pink font-bold text-sm hover:gap-3 transition-all"
                 >
                   Open Tool <ExternalLink className="w-4 h-4" />
                 </a>
@@ -156,7 +175,8 @@ export default function Tools() {
             </motion.div>
           ))}
         </AnimatePresence>
-      </div>
+      )}
+    </div>
 
       {filteredTools.length === 0 && !loading && (
         <div className="text-center py-20">

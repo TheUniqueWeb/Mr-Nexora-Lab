@@ -26,10 +26,10 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
       <div className="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-purple to-brand-cyan flex items-center justify-center neon-glow">
-            <Rocket className="text-white w-6 h-6 group-hover:animate-bounce" />
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-purple via-brand-pink to-brand-cyan flex items-center justify-center neon-glow">
+            <Rocket className="text-white w-6 h-6 group-hover:rotate-12 transition-transform" />
           </div>
-          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-brand-pink to-brand-indigo bg-[length:200%_auto] animate-gradient">
             Mr Nexora Lab
           </span>
         </Link>

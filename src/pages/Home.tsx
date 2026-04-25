@@ -17,16 +17,16 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-brand-cyan text-sm font-medium mb-8">
-              <Zap className="w-4 h-4" />
-              Welcome to the Future of Innovation
-            </span>
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-              Unleash Your <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-cyan to-brand-purple bg-[length:200%_auto] animate-gradient">
-                Digital Excellence
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-brand-purple/30 text-brand-cyan text-sm font-medium mb-8">
+                <Zap className="w-4 h-4 text-brand-purple animate-pulse" />
+                Welcome to the Future of Innovation
               </span>
-            </h1>
+              <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tighter">
+                Unleash Your <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-pink to-brand-cyan bg-[length:200%_auto] animate-gradient">
+                  Digital Excellence
+                </span>
+              </h1>
             <p className="text-slate-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
               Mr Nexora Lab is your premier destination for high-end tools, professional code scripts, and revolutionary applications. Step into a world of curated digital resources.
             </p>
@@ -50,14 +50,30 @@ export default function Home() {
 
         {/* Animated Background Elements */}
         <motion.div
-          animate={{ rotate: 360 }}
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.2, 1],
+            x: [0, 50, 0]
+          }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          className="absolute -z-10 top-1/4 -left-20 w-64 h-64 bg-brand-purple/20 blur-[100px] rounded-full"
+          className="absolute -z-10 top-1/4 -left-20 w-80 h-80 bg-brand-purple/30 blur-[100px] rounded-full"
         />
         <motion.div
-          animate={{ rotate: -360 }}
+          animate={{ 
+            rotate: -360,
+            scale: [1, 1.3, 1],
+            x: [0, -40, 0]
+          }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          className="absolute -z-10 bottom-1/4 -right-20 w-80 h-80 bg-brand-cyan/20 blur-[120px] rounded-full"
+          className="absolute -z-10 bottom-1/4 -right-20 w-96 h-96 bg-brand-cyan/20 blur-[120px] rounded-full"
+        />
+        <motion.div
+          animate={{ 
+            y: [0, -100, 0],
+            opacity: [0.1, 0.3, 0.1]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-pink/10 blur-[150px] rounded-full"
         />
       </section>
 
@@ -90,8 +106,8 @@ export default function Home() {
               title: "Nexus App Store",
               desc: "Premium applications designed for seamless user experience.",
               icon: Smartphone,
-              color: "text-amber-400",
-              bg: "bg-amber-400/10",
+              color: "text-brand-pink",
+              bg: "bg-brand-pink/10",
               link: "/apps"
             }
           ].map((cat, i) => (
@@ -120,16 +136,16 @@ export default function Home() {
           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">
             {[
-              { label: "Active Users", value: "25k+" },
-              { label: "Code Scripts", value: "850+" },
-              { label: "Curated Tools", value: "120+" },
-              { label: "App Downloads", value: "100k+" }
+              { label: "Active Users", value: "25k+", color: "from-brand-purple to-brand-indigo" },
+              { label: "Code Scripts", value: "850+", color: "from-brand-cyan to-brand-indigo" },
+              { label: "Curated Tools", value: "120+", color: "from-brand-pink to-brand-purple" },
+              { label: "App Downloads", value: "100k+", color: "from-white to-slate-400" }
             ].map((stat, i) => (
-              <div key={i}>
-                <div className="text-4xl md:text-5xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-500">
+              <div key={i} className="group">
+                <div className={cn("text-4xl md:text-5xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-br transition-all duration-500 group-hover:scale-110", stat.color)}>
                   {stat.value}
                 </div>
-                <div className="text-brand-cyan font-medium uppercase tracking-wider text-xs">
+                <div className="text-slate-400 font-medium uppercase tracking-widest text-[10px]">
                   {stat.label}
                 </div>
               </div>
